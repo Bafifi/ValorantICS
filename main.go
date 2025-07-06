@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -89,6 +91,11 @@ func main() {
 			fmt.Printf("Created valorant_%s.ics with %d matches\n", region, len(events))
 		}
 	}
+
+	err2 := generateIndexHTML("output")
+	if err2 != nil {
+		fmt.Println("Failed to write index.html:", err2)
+	}
 }
 
 func getRegionFromSlug(slug string) (string, bool) {
@@ -149,4 +156,37 @@ func writeICS(region string, events []Events) error {
 
 func urlQueryEscape(s string) string {
 	return (&url.URL{Path: s}).EscapedPath()
+}
+
+func generateIndexHTML(outputDir string) error {
+	indexPath := filepath.Join(outputDir, "index.html")
+	f, err := os.Create(indexPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Start HTML
+	f.WriteString("<!DOCTYPE html>\n<html>\n<head><meta charset=\"UTF-8\"><title>Calendars</title></head><body>\n")
+	f.WriteString("<h1>Available Calendars</h1>\n<ul>\n")
+
+	// List all .ics files in outputDir
+	err = filepath.WalkDir(outputDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && filepath.Ext(path) == ".ics" {
+			relPath, _ := filepath.Rel(outputDir, path)
+			f.WriteString(fmt.Sprintf("<li><a href=\"%s\">%s</a></li>\n", relPath, relPath))
+		}
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	// End HTML
+	f.WriteString("</ul>\n</body>\n</html>\n")
+	return nil
 }
