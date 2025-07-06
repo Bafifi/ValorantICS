@@ -13,13 +13,15 @@ import (
 	"time"
 
 	ical "github.com/arran4/golang-ical"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func main() {
 	now := time.Now().UTC()
 
 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	endOfDay := startOfDay.Add(360 * time.Hour)
+	endOfDay := startOfDay.Add(168 * time.Hour)
 
 	// Build GraphQL query
 	variables := map[string]any{
@@ -82,8 +84,12 @@ func main() {
 		grouped[region] = append(grouped[region], event)
 	}
 
-	// Create ICS for each region
-	for region, events := range grouped {
+	// List of all regions to always create ICS files for
+	allRegions := []string{"emea", "americas", "pacific", "china", "international"}
+
+	// Create ICS for each region, even if empty
+	for _, region := range allRegions {
+		events := grouped[region]
 		err := writeICS(region, events)
 		if err != nil {
 			fmt.Printf("Failed to write ICS for region %s: %v\n", region, err)
@@ -114,7 +120,8 @@ func getRegionFromSlug(slug string) (string, bool) {
 func writeICS(region string, events []Events) error {
 	cal := ical.NewCalendar()
 	cal.SetMethod(ical.MethodRequest)
-	cal.SetProductId("-//Valorant Esports Calendar//EN")
+	titleCaser := cases.Title(language.Und)
+	cal.SetProductId(fmt.Sprintf("-//Valorant Esports Calendar - %s//EN", titleCaser.String(region)))
 
 	for _, event := range events {
 		team1 := event.MatchTeams[0].Name
