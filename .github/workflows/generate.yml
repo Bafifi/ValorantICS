@@ -20,7 +20,7 @@ jobs:
 
       - name: Build and run generator
         run: |
-          go run main.go
+          go run .
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
