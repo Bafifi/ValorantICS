@@ -21,7 +21,7 @@ func main() {
 	now := time.Now().UTC()
 
 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	endOfDay := startOfDay.Add(168 * time.Hour)
+	endOfDay := startOfDay.Add(336 * time.Hour)
 
 	// Build GraphQL query
 	variables := map[string]any{
