@@ -137,7 +137,7 @@ func writeICS(region string, events []Events) error {
 	}
 
 	fileName := fmt.Sprintf("valorant_%s.ics", region)
-	f, err := os.Create(fmt.Sprintf("output/%s.ics", fileName))
+	f, err := os.Create(fmt.Sprintf("output/%s", fileName))
 	if err != nil {
 		return err
 	}
