@@ -1,13 +1,218 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><title>Calendars</title></head><body>
-<h1>Available Calendars</h1>
-<ul>
-<li><a href="valorant_americas.ics">valorant_americas.ics</a></li>
-<li><a href="valorant_china.ics">valorant_china.ics</a></li>
-<li><a href="valorant_emea.ics">valorant_emea.ics</a></li>
-<li><a href="valorant_international.ics">valorant_international.ics</a></li>
-<li><a href="valorant_pacific.ics">valorant_pacific.ics</a></li>
-</ul>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Valorant Esports Calendars</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        :root {
+            --accent: #2563eb;
+            --bg: #fafafa;
+            --fg: #18181b;
+            --card: #fff;
+            --border: #e5e7eb;
+        }
+
+        html[data-theme='dark'] {
+            --accent: #60a5fa;
+            --bg: #18181b;
+            --fg: #f4f4f5;
+            --card: #232336;
+            --border: #26264c;
+        }
+
+        html,
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 40px auto;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 28px 22px 18px 22px;
+            box-shadow: 0 2px 12px #0001;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            color: var(--accent);
+            font-size: 1.5em;
+            margin-bottom: 0.5em;
+            letter-spacing: -1px;
+        }
+
+        .blurb {
+            font-size: 1em;
+            margin-bottom: 1.5em;
+            color: var(--fg);
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            background: none;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 18px 0 0 0;
+            display: flex;
+            align-items: center;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.07em;
+            transition: color 0.15s;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button.copy-btn {
+            margin-left: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background 0.18s;
+        }
+
+        button.copy-btn:hover {
+            filter: brightness(0.9);
+        }
+
+        .copied-msg {
+            margin-left: 8px;
+            color: var(--accent);
+            font-size: 0.93em;
+            display: none;
+        }
+
+        .theme-toggle {
+            float: right;
+            margin-top: -8px;
+            margin-bottom: 10px;
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 5px;
+            padding: 3px 12px;
+            font-size: 0.98em;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 98vw;
+                padding: 16px 4vw 12px 4vw;
+            }
+
+            h1 {
+                font-size: 1.18em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle dark/light mode">🌙 Dark</button>
+        <h1>Valorant (VCT Only) Esports Calendars</h1>
+        <div class="blurb">
+            <b>How to subscribe:</b> Download the <code>.ics</code> file and import it into your calendar app, or copy
+            the link and use "Add by URL" in Google Calendar, Outlook, or Apple Calendar.<br>
+            <b>Tip:</b> Subscribing by URL keeps your calendar up to date automatically!
+        </div>
+        <ul>
+            
+            <li>
+                <a href="valorant_americas.ics">Valorant Americas</a>
+                <button class="copy-btn" data-link="valorant_americas.ics">Copy ICS Link</button>
+                <span class="copied-msg">Copied!</span>
+            </li>
+            
+            <li>
+                <a href="valorant_china.ics">Valorant China</a>
+                <button class="copy-btn" data-link="valorant_china.ics">Copy ICS Link</button>
+                <span class="copied-msg">Copied!</span>
+            </li>
+            
+            <li>
+                <a href="valorant_emea.ics">Valorant Emea</a>
+                <button class="copy-btn" data-link="valorant_emea.ics">Copy ICS Link</button>
+                <span class="copied-msg">Copied!</span>
+            </li>
+            
+            <li>
+                <a href="valorant_international.ics">Valorant International</a>
+                <button class="copy-btn" data-link="valorant_international.ics">Copy ICS Link</button>
+                <span class="copied-msg">Copied!</span>
+            </li>
+            
+            <li>
+                <a href="valorant_pacific.ics">Valorant Pacific</a>
+                <button class="copy-btn" data-link="valorant_pacific.ics">Copy ICS Link</button>
+                <span class="copied-msg">Copied!</span>
+            </li>
+            
+        </ul>
+    </div>
+    <script>
+        // Copy ICS link logic
+        document.querySelectorAll('.copy-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const link = window.location.origin + '/' + btn.getAttribute('data-link');
+                navigator.clipboard.writeText(link).then(function () {
+                    const msg = btn.nextElementSibling;
+                    msg.style.display = 'inline';
+                    setTimeout(() => { msg.style.display = 'none'; }, 1200);
+                });
+            });
+        });
+
+        // Theme toggle logic
+        const html = document.documentElement;
+        const btn = document.getElementById('theme-toggle-btn');
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            btn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+        }
+        // Initial theme
+        (function () {
+            let theme = localStorage.getItem('theme');
+            if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            setTheme(theme);
+        })();
+        btn.addEventListener('click', function () {
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    </script>
 </body>
+
 </html>
