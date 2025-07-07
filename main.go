@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 	"time"
 
 	ical "github.com/arran4/golang-ical"
@@ -167,33 +168,50 @@ func urlQueryEscape(s string) string {
 
 func generateIndexHTML(outputDir string) error {
 	indexPath := filepath.Join(outputDir, "index.html")
+	templatePath := "index.tmpl.html"
+
+	// Gather calendar files
+	type Calendar struct {
+		RelPath     string
+		DisplayName string
+	}
+	var calendars []Calendar
+
+	err := filepath.WalkDir(outputDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && filepath.Ext(path) == ".ics" {
+			relPath, _ := filepath.Rel(outputDir, path)
+			displayName := strings.TrimSuffix(relPath, ".ics")
+			displayName = strings.ReplaceAll(displayName, "_", " ")
+			displayName = strings.Title(displayName)
+			calendars = append(calendars, Calendar{
+				RelPath:     relPath,
+				DisplayName: displayName,
+			})
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	// Parse and execute template
+	tmpl, err := template.ParseFiles(templatePath)
+	if err != nil {
+		return err
+	}
 	f, err := os.Create(indexPath)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	// Start HTML
-	f.WriteString("<!DOCTYPE html>\n<html>\n<head><meta charset=\"UTF-8\"><title>Calendars</title></head><body>\n")
-	f.WriteString("<h1>Available Calendars</h1>\n<ul>\n")
-
-	// List all .ics files in outputDir
-	err = filepath.WalkDir(outputDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if !d.IsDir() && filepath.Ext(path) == ".ics" {
-			relPath, _ := filepath.Rel(outputDir, path)
-			f.WriteString(fmt.Sprintf("<li><a href=\"%s\">%s</a></li>\n", relPath, relPath))
-		}
-		return nil
-	})
-
-	if err != nil {
-		return err
+	data := struct {
+		Calendars []Calendar
+	}{
+		Calendars: calendars,
 	}
-
-	// End HTML
-	f.WriteString("</ul>\n</body>\n</html>\n")
-	return nil
+	return tmpl.Execute(f, data)
 }
