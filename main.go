@@ -21,15 +21,17 @@ import (
 func main() {
 	now := time.Now().UTC()
 
-	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	endOfDay := startOfDay.Add(504 * time.Hour)
+	nowDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+
+	startDate := nowDate.Add(-168 * time.Hour)
+	endDate := nowDate.Add(504 * time.Hour)
 
 	// Build GraphQL query
 	variables := map[string]any{
 		"hl":             "en-US",
 		"sport":          "val",
-		"eventDateStart": startOfDay.Format("2006-01-02T15:04:05.000Z"),
-		"eventDateEnd":   endOfDay.Format("2006-01-02T15:04:05.000Z"),
+		"eventDateStart": startDate.Format("2006-01-02T15:04:05.000Z"),
+		"eventDateEnd":   endDate.Format("2006-01-02T15:04:05.000Z"),
 		"eventState":     []string{"unstarted"},
 		"eventType":      "all",
 		"pageSize":       1000,
