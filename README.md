@@ -63,7 +63,7 @@ Click the links below to download the ICS file for your desired region. Please n
 -   Fetches upcoming Valorant Champions Tour (VCT) match schedules from `valorantesports.com`.
 -   Parses detailed match data, including participating teams, match dates, times, and event information.
 -   Generates region-specific ICS files compatible with most calendar applications.
--   Automatically deployed and updated via GitHub Actions to GitHub Pages.
+-   Automatically deployed and updated via GitHub Actions to GitHub Pages once daily at 00:00 UTC. The workflow can also be run manually from the Actions tab.
 
 ## Technologies Used
 

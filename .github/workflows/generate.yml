@@ -2,7 +2,7 @@ name: Generate ICS
 
 on:
   schedule:
-    - cron: "0 * * * *" # every hour
+    - cron: "0 0 * * *" # once daily at 00:00 UTC
   workflow_dispatch:
 
 permissions:
